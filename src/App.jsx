@@ -37,12 +37,4 @@ export default class App extends Component {
             </div>
         );
     }
-
-    hash(str) {
-        const p = 127;
-        const q = 2147483647;
-        const sum = str.split("")
-            .reduce((sum, chr, idx) => (sum + chr.charCodeAt(0) * Math.pow(p, idx) % q), 0);
-        return sum % q;
-    }
 }
