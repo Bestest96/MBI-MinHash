@@ -1,16 +1,18 @@
-class MinHash {
+export default class MinHash {
     constructor(strA, strB, k, m) {
         this.strA = strA;
         this.strB = strB;
         this.k = k;
         this.m = m;
+        this.aSteps = strA.length - k + 1;
+        this.bSteps = strB.length - k + 1;
         this.posA = 0;
         this.posB = 0;
-        this.xorNumbers = new Set([0]);
-        while (this.xorNumbers.size < m) {
-            this.xorNumbers.add(parseInt((Math.random() - 0.5) * 2 * Number.MAX_SAFE_INTEGER, 10));
+        const xorNumbers = new Set([0]);
+        while (xorNumbers.size < m) {
+            xorNumbers.add(parseInt((Math.random() - 0.5) * 2 * Number.MAX_SAFE_INTEGER, 10));
         }
-        this.xorNumbers = [...this.xorNumbers];
+        this.xorNumbers = [...xorNumbers];
         this.minHashA = [...Array(m)].map(() => Number.MAX_SAFE_INTEGER);
         this.minHashB = [...this.minHashA];
     }
@@ -64,17 +66,23 @@ class MinHash {
     }
 
     finish() {
-        let result = {};
+        const PROPS = ['hashValuesA', 'hashValuesB'];
+        const getAccPropName = name => `all${name[0].toUpperCase() + name.slice(1)}`;
+        const ACC_PROPS = PROPS.map(getAccPropName);
+        let currResult = {};
+        const accumulatedResult = ACC_PROPS.reduce((res, currName) => ({ ...res, [currName]: [] }), {});
         do {
-            result = this.step();
-        } while (!result.done);
-        const {
-            minHashA, minHashB, match, simValue,
-        } = result;
+            currResult = this.step();
+            PROPS.forEach((propName) => {
+                accumulatedResult[getAccPropName(propName)] = [
+                    ...accumulatedResult[getAccPropName(propName)],
+                    ...(currResult[propName].length ? [currResult[propName]] : []),
+                ];
+            });
+        } while (!currResult.done);
         return {
-            minHashA, minHashB, match, simValue,
+            ...currResult,
+            ...accumulatedResult,
         };
     }
 }
-
-module.exports = MinHash;
