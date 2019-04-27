@@ -1,5 +1,7 @@
 export default class MinHash {
     constructor(strA, strB, k, m) {
+        this.N = 32;
+        this.Npow = 2 ** this.N;
         this.strA = strA;
         this.strB = strB;
         this.k = k;
@@ -10,7 +12,7 @@ export default class MinHash {
         this.posB = 0;
         const xorNumbers = new Set([0]);
         while (xorNumbers.size < m) {
-            xorNumbers.add(parseInt((Math.random() - 0.5) * 2 * Number.MAX_SAFE_INTEGER, 10));
+            xorNumbers.add(parseInt(Math.random() * (this.Npow - 1), 10));
         }
         this.xorNumbers = [...xorNumbers];
         this.minHashA = [...Array(m)].map(() => Number.MAX_SAFE_INTEGER);
@@ -18,16 +20,16 @@ export default class MinHash {
     }
 
     static hashString(str) {
-        const p = 127;
+        const p = 21474799;
         const q = 2147483647;
         const sumAll = str.split('')
             .reduce((sum, chr, idx) => (sum + ((chr.charCodeAt(0) * (p ** idx)) % q)), 0);
-        return sumAll % q;
+        return (((sumAll % q) + q) % q);
     }
 
     getHashValues(str) {
         const hash = MinHash.hashString(str);
-        return this.xorNumbers.map(xorNum => hash ^ xorNum);
+        return this.xorNumbers.map(xorNum => (((hash ^ xorNum) % this.Npow) + this.Npow) % this.Npow);
     }
 
     step() {
@@ -58,8 +60,8 @@ export default class MinHash {
         if (this.posA === this.strA.length - this.k + 1 && this.posB === this.strB.length - this.k + 1) {
             results.minHashA = this.minHashA;
             results.minHashB = this.minHashB;
-            results.match = this.minHashA.filter((hashA, idx) => hashA === this.minHashB[idx]).length;
-            results.simValue = results.match / this.m;
+            results.match = this.minHashA.filter((hashA, idx) => idx && hashA === this.minHashB[idx]).length;
+            results.simValue = results.match / (this.m - 1);
             results.done = true;
         }
         return results;

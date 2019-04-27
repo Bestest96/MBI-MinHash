@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 export default function ProgressTable(props) {
     const { data, otherData } = props;
     const {
-        str, steps, m, k, hashValues, pos, minHash,
+        str, steps, m, k, hashValues, pos, minHash, xorNumbers,
     } = data;
 
     const {
         minHash: otherMinHash,
     } = otherData;
+
+    const getHexString = val => `0x${`00000000${val.toString(16).toUpperCase()}`.slice(-8)}`;
 
     const tableBody = [...Array(m)].map((_, id) => id).map((rowId) => {
         const tableRow = [...Array(steps)].map((_, id) => id).map((colId) => {
@@ -18,25 +21,46 @@ export default function ProgressTable(props) {
                 return (
                     <td
                         key={`td_${rowId}_${colId}`}
-                        className={value === minHash[rowId] ? 'alert-primary' : ''}
+                        className={classnames(
+                            { 'table-primary': value === minHash[rowId] && rowId },
+                            'text-monospace',
+                        )}
+                        style={{ borderColor: '#dee2e6' }}
                     >
-                        {value}
+                        {getHexString(value)}
                     </td>
                 );
             }
 
-            return <td key={`td_${rowId}_${colId}`} />;
+            return <td key={`td_${rowId}_${colId}`} style={{ borderColor: '#dee2e6' }} />;
         });
 
         return (
-            <tr key={`tr_${rowId}`}>
+            <tr
+                key={`tr_${rowId}`}
+                className={classnames({ 'table-secondary': !rowId })}
+            >
                 <td
-                    key={`td_min_${rowId}`}
-                    className={otherMinHash[rowId] === minHash[rowId] ? 'alert-success' : ''}
+                    key={`td_hash_${rowId}`}
+                    className="text-monospace table-secondary"
+                    style={{ borderColor: '#dee2e6' }}
                 >
-                    {minHash[rowId]}
+                    {rowId ? `#^${getHexString(xorNumbers[rowId])}` : '#(Kn)'}
                 </td>
                 {tableRow}
+                <td
+                    key={`td_min_${rowId}`}
+                    className={classnames(
+                        {
+                            'table-success': otherMinHash[rowId] === minHash[rowId] && rowId,
+                            'table-secondary': !(otherMinHash[rowId] === minHash[rowId] && rowId),
+                        },
+                        'text-monospace table-secondary',
+                    )}
+                    style={{ borderColor: '#dee2e6' }}
+                >
+                    {rowId ? getHexString(minHash[rowId]) : 'n/d'}
+                </td>
             </tr>
         );
     });
@@ -52,17 +76,20 @@ export default function ProgressTable(props) {
                 {str}
             </h3>
             <div className="table-responsive text-center">
-                <table className="table table-striped table-bordered table-hover table-sm">
+                <table className="table table-bordered table-sm">
                     <thead className="thead-light">
                         <tr>
-                            <th colSpan={steps + 1}>{str}</th>
+                            <th colSpan={steps + 2}>{str}</th>
                         </tr>
                         <tr>
-                            <th>Min</th>
+                            <th>Funkcja skrótu</th>
                             {kmers}
+                            <th>Min</th>
                         </tr>
                     </thead>
-                    <tbody>{tableBody}</tbody>
+                    <tbody>
+                        {tableBody}
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -78,6 +105,7 @@ ProgressTable.propTypes = {
         hashValues: PropTypes.array,
         pos: PropTypes.number,
         minHash: PropTypes.array,
+        xorNumbers: PropTypes.array,
     }).isRequired,
     otherData: PropTypes.shape({
         minHash: PropTypes.array,
