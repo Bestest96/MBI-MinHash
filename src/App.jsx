@@ -8,10 +8,10 @@ export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            strA: '',
-            strB: '',
+            strA: 'ABGTTABGT',
+            strB: 'ABGTABGTT',
             k: 3,
-            m: 4,
+            m: 5,
             inProgress: false,
             results: {},
             minHashInstance: undefined,
@@ -157,7 +157,6 @@ export default class App extends Component {
                         <input
                             className="form-control form-control-lg"
                             id="stringA"
-                            placeholder="AAGTBA"
                             value={strA}
                             disabled={inProgress}
                             onChange={e => this.setState({ strA: e.target.value.toUpperCase() })}
@@ -168,7 +167,6 @@ export default class App extends Component {
                         <input
                             className="form-control form-control-lg"
                             id="stringB"
-                            placeholder="AAGTBA"
                             value={strB}
                             disabled={inProgress}
                             onChange={e => this.setState({ strB: e.target.value.toUpperCase() })}
@@ -195,9 +193,9 @@ export default class App extends Component {
                             type="number"
                             id="m_value"
                             min={1}
-                            value={m}
+                            value={m - 1}
                             disabled={inProgress}
-                            onChange={e => this.setState({ m: parseInt(e.target.value, 10) })}
+                            onChange={e => this.setState({ m: parseInt(e.target.value, 10) + 1 })}
                         />
                     </div>
                     {buttons}
@@ -207,7 +205,7 @@ export default class App extends Component {
             </div>
         );
 
-        const resultString = `Podobieństwo ${parseInt(simValue * 100, 10)}% (${match}/${m})`;
+        const resultString = `Podobieństwo ${parseInt(simValue * 100, 10)}% (${match}/${m - 1})`;
 
         const finalResult = (
             <div className="d-flex justify-content-center">
