@@ -4,10 +4,18 @@ body {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  position: relative;
 }
 
 code {
   font-family: 'Roboto Mono', monospace;
+}
+
+.authors {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 }
 
 @import '../node_modules/bootstrap/scss/bootstrap.scss';

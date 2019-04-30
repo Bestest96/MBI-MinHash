@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import Latex from 'react-latex';
 
 export default function ProgressTable(props) {
     const { data, otherData } = props;
@@ -45,7 +46,12 @@ export default function ProgressTable(props) {
                     className="text-monospace table-secondary"
                     style={{ borderColor: '#dee2e6' }}
                 >
-                    {rowId ? `#^${getHexString(xorNumbers[rowId])}` : '#(Kn)'}
+                    <Latex>
+                        {rowId
+                            ? `$\\#\\ xor$ ${getHexString(xorNumbers[rowId])}`
+                            : '$\\#(K_n)$'
+                        }
+                    </Latex>
                 </td>
                 {tableRow}
                 <td

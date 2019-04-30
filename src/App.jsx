@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Latex from 'react-latex';
 import './App.scss';
 
 import ProgressTable from './ProgressTable';
@@ -219,12 +220,36 @@ export default class App extends Component {
         const resB = this.getResults('B');
 
         return (
-            <div className="m-3">
+            <div className="p-3">
                 <h3 className="mb-3">Algorytm minHash</h3>
                 {inputScreen}
                 {(done && inProgress) && finalResult}
                 {inProgress && <ProgressTable data={resA} otherData={resB} />}
                 {inProgress && <ProgressTable data={resB} otherData={resA} />}
+                <div className="mt-5">
+                    <p>
+                        <Latex>
+                        W aplikacji została zastosowana następująca funkcja haszująca:
+                        </Latex>
+                    </p>
+                    <p>
+                        <Latex>
+                            {'$$ \\#(s) = \\sum_{i = 0}^{n - 1}{ascii(s_i) * p^i} \\pmod{q} $$'}
+                        </Latex>
+                    </p>
+                    <p>
+                        <Latex>
+                            {'gdzie $ p \\equiv 21474799, q \\equiv 2147483647, n$ - długość ciągu znaków, '
+                            + '$i$ - indeks w ciągu znaków (liczony od 0), '
+                            + '$ascii(c)$ - zwraca wartość kodu ASCII dla znaku $c$'}
+                        </Latex>
+                    </p>
+                    <p>
+                        <Latex>
+                            {'Wszystkie obliczenia odbywają się w pierścieniu N-bitowym $(0 - 2^N)$, gdzie $N = 8.$'}
+                        </Latex>
+                    </p>
+                </div>
             </div>
         );
     }
