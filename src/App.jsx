@@ -246,7 +246,8 @@ export default class App extends Component {
                     </p>
                     <p>
                         <Latex>
-                            {'Wszystkie obliczenia odbywają się w pierścieniu N-bitowym $(0 - 2^N)$, gdzie $N = 8.$'}
+                            {'Wszystkie obliczenia odbywają się w pierścieniu N-bitowym ' +
+                            '$\\langle0 - 2^N)$, gdzie $N = 32.$'}
                         </Latex>
                     </p>
                 </div>
