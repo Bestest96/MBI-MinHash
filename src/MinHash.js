@@ -73,14 +73,15 @@ export default class MinHash {
         const ACC_PROPS = PROPS.map(getAccPropName);
         let currResult = {};
         const accumulatedResult = ACC_PROPS.reduce((res, currName) => ({ ...res, [currName]: [] }), {});
+        const accumulateResult = propName => {
+            accumulatedResult[getAccPropName(propName)] = [
+                ...accumulatedResult[getAccPropName(propName)],
+                ...(currResult[propName].length ? [currResult[propName]] : []),
+            ];
+        };
         do {
             currResult = this.step();
-            PROPS.forEach((propName) => {
-                accumulatedResult[getAccPropName(propName)] = [
-                    ...accumulatedResult[getAccPropName(propName)],
-                    ...(currResult[propName].length ? [currResult[propName]] : []),
-                ];
-            });
+            PROPS.forEach(accumulateResult);
         } while (!currResult.done);
         return {
             ...currResult,
